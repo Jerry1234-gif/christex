@@ -1,0 +1,144 @@
+const questions = [
+    {
+        question: "Who is the current president of Sierra Leone?",
+        options: ["Siaka Stevens", "Milton Margai", "Julius Maada Bio", "Edward Kamara"],
+        answer: "Julius Maada Bio"
+    },
+    {
+        question: "When did Sierra Leone gain its independence?",
+        options: ["1961", "1971", "1980", "1991"],
+        answer: "1961"
+    }, 
+    {
+        question: "What is the capital city of Sierra Leone?",
+        options: ["Kenema", "Freetown", "Bo", "Bonthe"],
+        answer: "Freetown"
+    },
+    {
+        question: "What ocean borders Sierra Leone to the west?",
+        options: ["Atlantic Ocean", "Indian Ocean", "Southern Ocean", "Pacific Ocean"],
+        answer: "Atlantic Ocean"
+    },
+    {
+        question: "What is Sierra Leone's national motto?",
+        options: ["One Nation, One People", "Unity, Freedom, and Justice", "Strength and Unity", "Peace and Prosperity"],
+        answer: "Unity, Freedom, and Justice"
+    },
+    {
+        question: "Which rebellion (1898) sought to end British taxation and protect land rights?",
+        options: ["The Hut Tax War", "The Temne Uprising", "The Limba Revolt"],
+        answer: "The Hut Tax War"
+    },
+    {
+        question: "In which year was the settlement of Freetown founded as a refuge for freed enslaved people?",
+        options: ["1698", "1787", "1804"],
+        answer: "1787"
+    },
+    {
+        question: "Which historical event happened in 1792 in Sierra Leone?",
+        options: [
+            "The founding of the capital city",
+            "The arrival of the Nova Scotian settlers",
+            "The first British governor was appointed",
+            "The creation of the Sierra Leone Company"
+        ],
+        answer: "The arrival of the Nova Scotian settlers"
+    },
+    {
+        question: "What is the historical significance of Bunce Island?",
+        options: [
+            "It was a major trading post for European traders.",
+            "It was used as a military base during World War II.",
+            "It was a slave trading hub during the Transatlantic Slave Trade.",
+            "It was the site of Sierra Leone’s first post-independence constitution."
+        ],
+        answer: "It was a slave trading hub during the Transatlantic Slave Trade."
+    },
+    {
+        question: "Which major trade contributed significantly to Sierra Leone’s early economy?",
+        options: ["Ivory", "Cocoa", "Slaves", "Gold"],
+        answer: "Slaves"
+    },
+    {
+        question: "Which ethnic group is considered one of the largest in Sierra Leone?",
+        options: ["Mende", "Soso", "Fula", "Krio"],
+        answer: "Mende"
+    }
+];
+
+let currentQuestionIndex = 0;
+let playerScore = 0;
+let timer;
+let remainingTime = 30; 
+
+function displayNextQuestion() {
+    resetTimer();
+
+    if (currentQuestionIndex >= questions.length) {
+        alert(`Quiz finished! Your final score is ${playerScore} out of ${questions.length}.`);
+        restartQuiz();
+        return;
+    }
+
+    const questionData = questions[currentQuestionIndex];
+    document.getElementById("question").textContent = questionData.question;
+    
+    const optionsContainer = document.getElementById("options-container");
+    optionsContainer.innerHTML = "";
+    
+    questionData.options.forEach(option => {
+        const optionElement = document.createElement("div");
+        optionElement.classList.add("option");
+        optionElement.textContent = option;
+        optionElement.addEventListener("click", () => handleAnswerSelection(option));
+        optionsContainer.appendChild(optionElement);
+    });
+
+    document.getElementById("result-message").textContent = "";
+    startTimer();
+}
+
+function startTimer() {
+    document.getElementById("timer").textContent = `Time left: ${remainingTime}s`;
+    
+    if (remainingTime > 0) {
+        remainingTime--;
+        timer = setTimeout(startTimer, 1000);
+    } else {
+        document.getElementById("result-message").textContent = "⏳ Time's up! ❌";
+        setTimeout(loadNextQuestion, 2000);
+    }
+}
+
+function resetTimer() {
+    clearTimeout(timer);
+    remainingTime = 30;
+}
+
+function handleAnswerSelection(selectedOption) {
+    resetTimer();
+    const correctAnswer = questions[currentQuestionIndex].answer;
+    
+    if (selectedOption === correctAnswer) {
+        playerScore++;
+        document.getElementById("result-message").textContent = "✅ Correct! Well done!";
+    } else {
+        document.getElementById("result-message").textContent = "❌ Oops! That wasn't right.";
+    }
+
+    document.getElementById("score").textContent = `Score: ${playerScore}`;
+    setTimeout(loadNextQuestion, 2000);
+}
+
+function loadNextQuestion() {
+    currentQuestionIndex++;
+    displayNextQuestion();
+}
+
+function restartQuiz() {
+    currentQuestionIndex = 0;
+    playerScore = 0;
+    displayNextQuestion();
+}
+
+displayNextQuestion();
